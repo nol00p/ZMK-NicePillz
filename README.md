@@ -3,6 +3,8 @@
 ## Overview
 ZMK Configurations for the the NicePillz Board: https://github.com/nol00p/NicePillz
 
+The layout is Linux/Gnome driven.
+
 ## Features supported
 - [x] ZMK Studio 
 - [x] Leader key
@@ -22,7 +24,7 @@ bluetooth power, speed and timeour update too for better experience.
 
 ## Extra
 
-a quick scripton the linux to get the battery state of the keyboard from the the cli.
+A quick shell script to get the battere state of the keyboard on the CLI.
 
 ```
 !/bin/bash
