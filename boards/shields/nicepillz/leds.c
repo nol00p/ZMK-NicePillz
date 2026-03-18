@@ -17,11 +17,6 @@
 #define IDLE_BLINK_ON_MS   1000
 #define IDLE_BLINK_OFF_MS  2000
 
-/* Pre-sleep flash pattern */
-#define SLEEP_FLASH_COUNT    3
-#define SLEEP_FLASH_ON_MS   80
-#define SLEEP_FLASH_OFF_MS  80
-
 static const struct device *led_dev = DEVICE_DT_GET(LED_GPIO_NODE_ID);
 static bool idle_blink_state = false;
 static bool is_idle = false;
@@ -57,32 +52,6 @@ static void idle_blink_stop(void) {
     k_timer_stop(&idle_blink_timer);
 }
 
-/* --- Pre-sleep flash sequence (runs from work queue) --- */
-
-static void sleep_flash_work_handler(struct k_work *work);
-K_WORK_DEFINE(sleep_flash_work, sleep_flash_work_handler);
-
-static void sleep_flash_work_handler(struct k_work *work) {
-    /* Stop any idle blinking first */
-    idle_blink_stop();
-    led_off(led_dev, LED_CAPS);
-    led_off(led_dev, LED_NUM);
-    k_msleep(SLEEP_FLASH_OFF_MS);
-
-    for (int i = 0; i < SLEEP_FLASH_COUNT; i++) {
-        led_on(led_dev, LED_CAPS);
-        k_msleep(SLEEP_FLASH_ON_MS);
-        led_off(led_dev, LED_CAPS);
-        if (i < SLEEP_FLASH_COUNT - 1) {
-            k_msleep(SLEEP_FLASH_OFF_MS);
-        }
-    }
-
-    /* LEDs off for deep sleep */
-    led_off(led_dev, LED_CAPS);
-    led_off(led_dev, LED_NUM);
-}
-
 /* --- Restore LEDs on wake --- */
 
 static void leds_restore_active(void) {
@@ -110,7 +79,9 @@ static int activity_listener_cb(const zmk_event_t *eh) {
         idle_blink_start();
         break;
     case ZMK_ACTIVITY_SLEEP:
-        k_work_submit(&sleep_flash_work);
+        idle_blink_stop();
+        led_off(led_dev, LED_CAPS);
+        led_off(led_dev, LED_NUM);
         break;
     }
     return 0;
