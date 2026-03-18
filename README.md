@@ -21,6 +21,15 @@ The layout is Linux/Gnome driven.
 the battery reporting is included so it can be visible in the os. 
 bluetooth power, speed and timeour update too for better experience. 
 
+## LED Behavior
+the power led shows the power status of the Board. the ble led, shows when the board is connected to bluetooth.
+Sleep modes: 
+sleep (timer 5min): pwr led flashs, ble led off. 
+Deep Sleep (timer 20min): both led off
+
+## Sleep modes
+Sleep, 5 min timer - any keys to resume
+Deep Sleep, 20 min timer - press the esc key (0,0) to wake the board up.
 
 ## Extra
 
